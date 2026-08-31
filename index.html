@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<title>AI家庭资产负债表</title>
+<style>
+:root{
+  --bg:#08111f;--panel:#0f1b2d;--panel2:#132238;--line:#263852;
+  --text:#f4f7fb;--muted:#9db0c9;--blue:#64a5ff;--green:#65d6a6;
+  --yellow:#f2c55c;--red:#ff7b7b;--white:#fff;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#07101d 0%,#0a1525 100%);color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+.container{max-width:980px;margin:auto;padding:22px 14px 60px}
+.hero{padding:30px 8px 20px;text-align:center}
+.badge{display:inline-block;font-size:12px;color:#b9d4ff;border:1px solid #2a4c75;background:#10223b;padding:6px 11px;border-radius:999px}
+h1{font-size:clamp(30px,7vw,52px);margin:14px 0 8px;letter-spacing:-1px}
+.hero p{margin:0 auto;max-width:720px;color:var(--muted);font-size:14px;line-height:1.8}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:start}
+.card{background:rgba(15,27,45,.95);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.18)}
+.card h2{font-size:17px;margin:0 0 14px}.sub{font-size:12px;color:var(--muted);margin-top:-7px;margin-bottom:14px;line-height:1.6}
+.section{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}.section:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.section-title{font-weight:700;font-size:14px;margin-bottom:11px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field label{display:block;font-size:11px;color:var(--muted);margin:0 0 6px}
+.field input,.field select{width:100%;border:1px solid #314661;background:#0b1626;color:var(--text);padding:11px 10px;border-radius:10px;font-size:14px}
+.field input:focus,.field select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(100,165,255,.1)}
+.unit{font-size:10px;color:#6f849f;margin-top:4px}
+.actions{display:flex;gap:10px;margin-top:18px}
+button{appearance:none;border:0;border-radius:11px;padding:12px 16px;font-weight:700;cursor:pointer}
+.primary{background:linear-gradient(135deg,#3b82f6,#67a9ff);color:white;flex:1}
+.secondary{background:#14263d;color:#cbdaf0;border:1px solid #2a405d}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{padding:14px;border:1px solid var(--line);border-radius:13px;background:#0b1626}
+.metric .k{font-size:11px;color:var(--muted)}.metric .v{font-size:23px;font-weight:800;margin-top:5px}.metric .s{font-size:10px;color:#6f849f;margin-top:3px}
+.good{color:var(--green)}.warn{color:var(--yellow)}.bad{color:var(--red)}.blue{color:var(--blue)}
+.bar-wrap{margin:14px 0}.bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px}
+.bar{height:9px;background:#17283f;border-radius:999px;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,#4e95ff,#60d2ad);border-radius:999px;width:0;transition:.4s}
+.scenario{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.sc{background:#0b1626;border:1px solid var(--line);border-radius:12px;padding:11px;text-align:center}
+.sc b{display:block;font-size:17px;margin:4px 0}.sc span{font-size:10px;color:var(--muted)}
+.ai{margin-top:14px;background:linear-gradient(180deg,#10233b,#0d1c30);border:1px solid #2b4b73;border-radius:14px;padding:14px}
+.ai-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.ai-head strong{font-size:14px}
+.ai-text{white-space:pre-wrap;font-size:13px;line-height:1.85;color:#dce8f7;margin-top:12px}
+.note{font-size:10px;color:#7186a0;line-height:1.65;margin-top:10px}
+.footer{text-align:center;color:#6e819a;font-size:10px;line-height:1.8;margin-top:22px}
+.pill{font-size:10px;border:1px solid #2d4666;padding:4px 8px;border-radius:999px;color:#a9c6eb}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.fields{grid-template-columns:1fr 1fr}.container{padding:12px 10px 40px}.hero{padding-top:22px}.card{padding:15px}}
+@media(max-width:420px){.fields{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}.scenario{grid-template-columns:1fr 1fr 1fr}.metric .v{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <section class="hero">
+    <span class="badge">AI临界点 · 家庭财务工具</span>
+    <h1>AI家庭资产负债表</h1>
+    <p>把家庭收入、资产、负债和房贷放在一张表里。先看你“买不买得起”，再看遇到收入下降时“撑不撑得住”。基础计算全部在浏览器本地完成。</p>
+  </section>
+
+  <main class="grid">
+    <section class="card">
+      <h2>填写家庭数据</h2>
+      <div class="sub">不需要姓名、手机号、身份证或精确地址。金额统一按“万元”填写，月度收入/支出按“万元/月”。</div>
+
+      <div class="section">
+        <div class="section-title">家庭与现金流</div>
+        <div class="fields">
+          <div class="field"><label>家庭税后月收入</label><input id="income" type="number" min="0" step=".1" value="4"><div class="unit">万元/月</div></div>
+          <div class="field"><label>每月必要生活支出</label><input id="expense" type="number" min="0" step=".1" value="1.5"><div class="unit">万元/月，不含房贷</div></div>
+          <div class="field"><label>现金及活期存款</label><input id="cash" type="number" min="0" step="1" value="40"><div class="unit">万元</div></div>
+          <div class="field"><label>基金/股票等金融资产</label><input id="invest" type="number" min="0" step="1" value="30"><div class="unit">万元</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">住房与房贷</div>
+        <div class="fields">
+          <div class="field"><label>住房当前估值</label><input id="home" type="number" min="0" step="1" value="500"><div class="unit">万元</div></div>
+          <div class="field"><label>房贷剩余本金</label><input id="mortgage" type="number" min="0" step="1" value="300"><div class="unit">万元</div></div>
+          <div class="field"><label>当前月供</label><input id="payment" type="number" min="0" step=".01" value="1.8"><div class="unit">万元/月</div></div>
+          <div class="field"><label>剩余年限</label><input id="years" type="number" min="1" max="40" step="1" value="20"><div class="unit">年</div></div>
+          <div class="field"><label>贷款年利率</label><input id="rate" type="number" min="0" max="20" step=".01" value="3.1"><div class="unit">%</div></div>
+          <div class="field"><label>其他债务</label><input id="otherDebt" type="number" min="0" step="1" value="30"><div class="unit">万元</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">保障与家庭责任</div>
+        <div class="fields">
+          <div class="field"><label>家庭年保费</label><input id="insurance" type="number" min="0" step=".1" value="2"><div class="unit">万元/年</div></div>
+          <div class="field"><label>子女教育年支出</label><input id="education" type="number" min="0" step=".1" value="6"><div class="unit">万元/年</div></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" onclick="calculate()">生成家庭财务诊断</button>
+        <button class="secondary" onclick="resetDemo()">恢复示例</button>
+      </div>
+      <div class="note">“30/40年展期”仅做等额本息数学情景比较，不代表银行一定允许展期；延期还本、重组、利率和期限均以银行实际审批和合同为准。</div>
+    </section>
+
+    <section class="card" id="report">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <h2 style="margin:0">家庭资产负债诊断</h2><span class="pill" id="grade">待计算</span>
+      </div>
+      <div class="sub" style="margin-top:8px">先看现金流安全边际，再看杠杆。房价涨跌不是家庭能控制的变量，现金流是。</div>
+
+      <div class="metrics">
+        <div class="metric"><div class="k">家庭净资产</div><div class="v blue" id="networth">—</div><div class="s">资产减全部债务</div></div>
+        <div class="metric"><div class="k">负债率</div><div class="v" id="debtratio">—</div><div class="s">总债务 / 总资产</div></div>
+        <div class="metric"><div class="k">月度结余</div><div class="v" id="surplus">—</div><div class="s">收入减生活支出与月供</div></div>
+        <div class="metric"><div class="k">房贷负担率</div><div class="v" id="mortgageRatio">—</div><div class="s">月供 / 税后月收入</div></div>
+        <div class="metric"><div class="k">当前现金可撑</div><div class="v" id="runway">—</div><div class="s">按当前现金流估算</div></div>
+        <div class="metric"><div class="k">收入下降30%可撑</div><div class="v" id="stressRunway">—</div><div class="s">压力测试安全边际</div></div>
+      </div>
+
+      <div class="bar-wrap">
+        <div class="bar-label"><span>综合财务安全度</span><b id="score">—</b></div>
+        <div class="bar"><i id="scorebar"></i></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">房贷展期情景</div>
+        <div class="scenario">
+          <div class="sc"><span>当前月供</span><b id="payNow">—</b><span>你正在支付</span></div>
+          <div class="sc"><span>展期30年</span><b id="pay30">—</b><span>等额本息估算</span></div>
+          <div class="sc"><span>展期40年</span><b id="pay40">—</b><span>等额本息估算</span></div>
+        </div>
+      </div>
+
+      <div class="ai">
+        <div class="ai-head"><strong>🤖 AI个性化解读</strong><button class="secondary" style="padding:7px 10px" onclick="localInsight()">生成AI解读</button></div>
+        <div class="ai-text" id="aiText">当前公开版未接入任何AI大模型API。点击“生成AI解读”后，将由浏览器本地规则根据已计算指标生成建议。</div>
+        <div class="note">当前公开版未接入Claude、ChatGPT、DeepSeek等任何AI大模型API，不消耗任何人的API额度；“AI个性化解读”由浏览器本地规则生成，填写数据不会上传。若要使用真实大模型，使用者需自行配置自己的API Key，或使用后续提供的付费AI服务。</div>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer">
+    本工具用于家庭财务与房贷压力的情景分析，不构成投资、信贷、法律、税务或保险建议。<br>
+    房贷展期、延期还本等政策适用性，以银行、监管规则及实际合同为准。
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const n=id=>Math.max(0,parseFloat($(id).value)||0);
+let last=null;
+
+function money(v){return (isFinite(v)?v:0).toFixed(1)+"万"}
+function pct(v){return (isFinite(v)?v*100:0).toFixed(1)+"%"}
+function months(v){if(!isFinite(v))return "≥120月"; return Math.max(0,v).toFixed(1)+"月"}
+function payment(principalWan, annualRate, years){
+  if(principalWan<=0)return 0;
+  const m=annualRate/100/12, N=years*12;
+  if(m===0)return principalWan/N;
+  return principalWan*m*Math.pow(1+m,N)/(Math.pow(1+m,N)-1);
+}
+function cls(el,v,good,warn){
+  el.className="v "+(v<=good?"good":v<=warn?"warn":"bad");
+}
+function calculate(){
+  const income=n("income"),expense=n("expense"),cash=n("cash"),invest=n("invest"),
+        home=n("home"),mortgage=n("mortgage"),pay=n("payment"),years=n("years"),
+        rate=n("rate"),other=n("otherDebt"),ins=n("insurance"),edu=n("education");
+  const monthlyExtra=(ins+edu)/12;
+  const totalAssets=cash+invest+home;
+  const totalDebt=mortgage+other;
+  const net=totalAssets-totalDebt;
+  const debtRatio=totalAssets?totalDebt/totalAssets:0;
+  const surplus=income-expense-pay-monthlyExtra;
+  const mortgageRatio=income?pay/income:0;
+  const outflow=expense+pay+monthlyExtra;
+  const runway=surplus>=0?120:cash/(-surplus);
+  const stressIncome=income*.7;
+  const stressSurplus=stressIncome-outflow;
+  const stressRunway=stressSurplus>=0?120:cash/(-stressSurplus);
+  const p30=payment(mortgage,rate,30),p40=payment(mortgage,rate,40);
+
+  let score=100;
+  if(debtRatio>0.7)score-=25; else if(debtRatio>0.5)score-=15; else if(debtRatio>0.35)score-=8;
+  if(mortgageRatio>0.5)score-=25; else if(mortgageRatio>0.35)score-=15; else if(mortgageRatio>0.25)score-=7;
+  if(stressRunway<6)score-=25; else if(stressRunway<12)score-=15; else if(stressRunway<24)score-=7;
+  if(surplus<0)score-=20; else if(income && surplus/income<.1)score-=8;
+  score=Math.max(0,Math.min(100,score));
+
+  $("networth").textContent=money(net);
+  $("debtratio").textContent=pct(debtRatio); cls($("debtratio"),debtRatio,.4,.6);
+  $("surplus").textContent=money(surplus)+"/月"; $("surplus").className="v "+(surplus>=0?"good":"bad");
+  $("mortgageRatio").textContent=pct(mortgageRatio); cls($("mortgageRatio"),mortgageRatio,.3,.45);
+  $("runway").textContent=months(runway); $("runway").className="v "+(runway>=24?"good":runway>=12?"warn":"bad");
+  $("stressRunway").textContent=months(stressRunway); $("stressRunway").className="v "+(stressRunway>=18?"good":stressRunway>=9?"warn":"bad");
+  $("score").textContent=score+" / 100"; $("scorebar").style.width=score+"%";
+  $("payNow").textContent=money(pay);
+  $("pay30").textContent=money(p30);
+  $("pay40").textContent=money(p40);
+  const grade=score>=80?"稳健":score>=65?"可控":score>=50?"偏紧":"高压";
+  $("grade").textContent=grade;
+  $("grade").style.color=score>=80?"#65d6a6":score>=65?"#64a5ff":score>=50?"#f2c55c":"#ff7b7b";
+
+  last={income,expense,cash,invest,home,mortgage,pay,years,rate,other,ins,edu,totalAssets,totalDebt,net,debtRatio,surplus,mortgageRatio,runway,stressRunway,p30,p40,score,stressSurplus};
+  $("aiText").textContent="诊断已生成。点击“生成AI解读”查看针对你家庭情况的建议。";
+  if(window.innerWidth<761)$("report").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function localInsight(){
+  if(!last)calculate();
+  const d=last, lines=[];
+  lines.push("你的家庭财务安全度为 "+d.score+" 分。");
+  if(d.surplus<0){
+    lines.push("当前每月现金流已经为负，首要任务不是讨论房价，而是把月度缺口收窄。优先保留现金，不宜在没有备用金的情况下贸然提前还贷。");
+  }else if(d.surplus/d.income<.15){
+    lines.push("当前现金流仍为正，但结余偏薄。收入一旦波动，房贷会迅速挤压家庭其他支出。");
+  }else{
+    lines.push("当前现金流有一定余量，家庭短期偿债能力尚可。");
+  }
+  if(d.mortgageRatio>.45){
+    lines.push("房贷负担率已超过45%，属于高压区。若银行允许调整期限，降低月供比追求更快还清本金更重要。");
+  }else if(d.mortgageRatio>.30){
+    lines.push("房贷负担率处于需要关注的区间，建议至少保留12个月必要支出对应的流动资金。");
+  }else{
+    lines.push("房贷占收入比例相对可控，重点转向提高紧急备用金和减少高息其他债务。");
+  }
+  if(d.stressRunway<6){
+    lines.push("压力测试显示：收入下降30%后，现金安全边际不足6个月。这个家庭对失业或降薪非常敏感，应把流动性放在提前还贷之前。");
+  }else if(d.stressRunway<12){
+    lines.push("收入下降30%后，现金大约只能覆盖一年以内的缺口，建议把备用金目标提高到12—18个月。");
+  }else{
+    lines.push("收入下降30%的情况下，现有现金仍有较长缓冲期，抗冲击能力相对较强。");
+  }
+  if(d.other>0){
+    lines.push("你还有约"+money(d.other)+"其他债务。如果其中存在信用贷、消费贷等高利率负债，通常应优先比较其利率与房贷利率，再决定还款顺序。");
+  }
+  if(d.mortgage>0){
+    const cut30=Math.max(0,d.pay-d.p30), cut40=Math.max(0,d.pay-d.p40);
+    lines.push("按当前利率做纯数学情景测算，若剩余本金重新按30年摊还，月供约"+money(d.p30)+"；按40年约"+money(d.p40)+"。相较当前月供，月度现金流理论上分别可释放约"+money(cut30)+"和"+money(cut40)+"。实际是否可展期、总利息如何变化，以银行审批为准。");
+  }
+  lines.push("核心原则：先保证家庭不断供、不断粮，再讨论收益率和资产升值。");
+  $("aiText").textContent=lines.join("\n\n");
+}
+function resetDemo(){
+  const vals={income:4,expense:1.5,cash:40,invest:30,home:500,mortgage:300,payment:1.8,years:20,rate:3.1,otherDebt:30,insurance:2,education:6};
+  Object.entries(vals).forEach(([k,v])=>$(k).value=v);
+  calculate();
+}
+calculate();
+</script>
+</body>
+</html>
